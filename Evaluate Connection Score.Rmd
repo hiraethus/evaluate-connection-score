@@ -1,7 +1,7 @@
 ---
 title: "Evaluating Connection Score on Unordered Query Gene Signatures"
 params:
-  N: 10000
+  N: 5000
   Random.Sigs: 2000
 output:
   word_document: default
@@ -118,5 +118,20 @@ exactly matches the first m highest ranked genes in the reference profile.
 # Calculate P Values
 
 ```{r Calculate P Values}
+p.vals <- apply(result, 1, function(row) {
+  m <- row[1]
+  cs <- row[2]
+  
+  theoretical.max.score <- max.connection.strength(params$N, m)
+  
+  random.connection.scores <- lapply(random.profiles, function(rand.prof) {
+    random.strength <- calc.connection.strength(query.gene.sig, rand.prof, m)
+    random.score <- random.strength / theoretical.max.score
+  })
+  
+  num.stronger.scores <- length(which(random.connection.scores > cs))
+  num.stronger.scores / params$Random.Sigs
+})
 
+significant.result<- cbind(result, p.vals)
 ```
