@@ -92,7 +92,8 @@ library(parallel)
 
 Ms <- seq(params$N)
 n.cores <- 4
-split.Ms <- split(Ms, Ms %% n.cores)
+groups <- sort(rep(seq(4), params$N/n.cores))
+split.Ms <- split(Ms, groups)
 scores.group <- mclapply(split.Ms, function(Ms.sublist) {
   scores <- sapply(Ms, function(m) {
     max.cs <- max.connection.strength(params$N, m)
