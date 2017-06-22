@@ -1,0 +1,122 @@
+---
+title: "Evaluating Connection Score on Unordered Query Gene Signatures"
+params:
+  N: 10000
+  Random.Sigs: 2000
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This document attempts to establish if connection score is a good metric for choosing candidate therapies
+using Gene Expression Connectivity Map according to the method detailed in Zhang and Gantt 2008. Specifically, we will look at a theoretical unordered query gene signature that matches the top m of N genes exactly (in terms of sign - rank is not included in unordered signatures) and establish the distribution of connection score as m tends to N.
+
+It is also intended for p values to be calculated for each of these scores by randomly generating query 
+gene signatures and seeing if how man of the scores are higher than or equal to the synthesised connection 
+score for that value of m.
+
+# Creating a synthetic Reference Profile and Query Gene Signature
+
+We will create our synthetic Reference Profile as simply an ordered rank of probes from 1 to N with 
+alternative signs to represent upregulation and downregulation of the genes. Note that we select N = `r params$N`.
+
+```{r Create Ref Profile}
+reference.profile <- seq(params$N)
+even.probes <- seq(2, params$N, by = 2)
+
+reference.profile[even.probes] <- -reference.profile[even.probes]
+```
+
+To create the unordered query gene signatures, we can derive these values by taking the sign of these reference profile values:
+
+```{r Create Unordered Query Gene Signature}
+query.gene.sig <- sign(reference.profile)
+```
+
+# Methods
+
+## Calculate Maximum Connection Strength
+
+```{r Calculate Maximum Connection Strength}
+max.connection.strength <- function(N, m) {
+  x <- sapply(seq(m), function(i) {
+    N - i + 1
+  })
+  
+  sum(x)
+}
+```
+
+## Calculate Connection Strength
+
+```{r Calculate Connection Strength method}
+calc.connection.strength <- function(query.gene.sig, reference.profile, m) {
+  query.gene.sig.sub <- query.gene.sig[1:m]
+  reference.profile.sub <- query.gene.sig[1:m]
+  
+  sum(query.gene.sig.sub * reference.profile.sub)
+}
+```
+
+## Calculate Connection Score
+
+Connection score is simply dividing the connection strength by the theoretical maximum connection strength.
+
+## Random signatures
+
+Let's generate `r  params$Random.Sigs`.
+
+```{r Create random signatures}
+random.profiles <- lapply(seq(params$Random.Sigs), function(i) {
+  ranks <- rank(rnorm(n = params$N))
+  signs <- sign(rnorm(n= params$N, mean = 0, sd=1))
+
+  ranks * signs
+})
+
+```
+
+# Running the example
+Given N = `r params$N` and m from sizes 1 to N...
+
+```{r Calculate Theoretical Scores}
+
+library(parallel)
+
+Ms <- seq(params$N)
+n.cores <- 4
+split.Ms <- split(Ms, Ms %% n.cores)
+scores.group <- mclapply(split.Ms, function(Ms.sublist) {
+  scores <- sapply(Ms, function(m) {
+    max.cs <- max.connection.strength(params$N, m)
+    cs <- calc.connection.strength(query.gene.sig, reference.profile, m)
+  
+    cs/max.cs
+  })
+  
+  return(scores)
+})
+
+# flatten the list of scores into one list
+scores <- unlist(scores.group)
+
+result <- data.frame(m=Ms, cs=scores)
+plot(result)
+```
+
+As we can see form the plot, Connection Score grows exponentially as m converges on N. However, you will
+note that the connection score is very small, meaning that, where the unordered query gene signature 
+exactly matches the first m highest ranked genes in the reference profile.
+
+# Calculate P Values
+
+```{r Calculate P Values}
+
+```
