@@ -1,12 +1,9 @@
 ---
 title: "Evaluating Connection Score on Unordered Query Gene Signatures"
 params:
-  N: 5000
+  N: 500
   Random.Sigs: 2000
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -57,9 +54,10 @@ max.connection.strength <- function(N, m) {
 ## Calculate Connection Strength
 
 ```{r Calculate Connection Strength method}
-calc.connection.strength <- function(query.gene.sig, reference.profile, m) {
-  query.gene.sig.sub <- query.gene.sig[1:m]
-  reference.profile.sub <- query.gene.sig[1:m]
+calc.connection.strength <- function(query.gene.sig, reference.profile, m, sig.offset = 0) {
+  sig.idx <- seq(from=1+sig.offset, by=1, length.out=m)
+  query.gene.sig.sub <- query.gene.sig[sig.idx]
+  reference.profile.sub <- reference.profile[sig.idx]
   
   sum(query.gene.sig.sub * reference.profile.sub)
 }
@@ -109,12 +107,25 @@ scores.group <- mclapply(split.Ms, function(Ms.sublist) {
 scores <- unlist(scores.group)
 
 result <- data.frame(m=Ms, cs=scores)
+```
+
+## Lowest Connection Scores
+```{r Lowest Connection Scores varying m, echo=F}
+knitr::kable(head(result, n=20))
+```
+
+## Highest Connection Scores
+```{r Highest Connection Scores varying m, echo=F}
+knitr::kable(tail(result, n=20))
+```
+
+```{r Plot Connection Scores, echo=F}
 plot(result)
 ```
 
-As we can see form the plot, Connection Score grows exponentially as m converges on N. However, you will
-note that the connection score is very small, meaning that, where the unordered query gene signature 
-exactly matches the first m highest ranked genes in the reference profile.
+As we can see form the plot, Connection Score grows exponentially as m converges on N. More importantly, as m converges on N, the connection score tends towards 1.0. This means that connection 
+score varies with the length of m, implying that a higher connection score is derived when our query 
+gene signature is more complete.
 
 # Calculate P Values
 
@@ -135,4 +146,63 @@ p.vals <- apply(result, 1, function(row) {
 })
 
 significant.result<- cbind(result, p.vals)
+
 ```
+
+### P vals for Lowest m
+```{r Lowest significant p vals, echo=F}
+knitr::kable(head(significant.result, n=20))
+```
+
+### P vals for Highest m
+```{r Highest significant p vals, echo=F}
+knitr::kable(tail(significant.result, n=20))
+```
+
+We can see in the results that as m increases, p becomes more significant implying that random query 
+gene signatures are less likely to be as high as the synthetic unordered query gene signature as 
+the query gene signature gets longer.
+
+# Offset effect
+
+If the query synthetic gene signature is offset by an amount F, then I anticipate that the connection 
+score will go up. This is because, by offsetting the synthetic gene signature, lower ranked, and therefore large rank values will be multiplied together with the reference profile. This could 
+imply that the connection score is biased towards finding matching lower ranked genes rather than the 
+highest ones.
+
+## Example
+Let us choose a nominal m:
+```{r Set m as 50}
+m <- 50
+```
+If we assume m = `r m` and leave N = `r params$N`, we can perform connectivity map for all offsets 
+from starting at offset F = 0 until the offset is N - m which is `r params$N - m`. I believe that if we plot 
+the offset of our matching synthetic query gene signatures against connection score that the connection score will increase significantly.
+
+```{r Perform offset analysis}
+
+offsets <- seq(0, params$N - m)
+
+offset.connection.scores <- sapply(offsets, function(offset) {
+  max.cs <- max.connection.strength(params$N, m)
+  cs <- calc.connection.strength(query.gene.sig, reference.profile, m, sig.offset = offset)
+  
+  cs/max.cs
+})
+
+offset.result <- data.frame(offset=offsets, cs=offset.connection.scores)
+
+
+```
+
+### Lowest Offset Scores
+```{r Lowest Offset Scores, echo=F}
+knitr::kable(head(offset.result,n=20))
+```
+
+### Highest Offset Scores
+```{r Highest Offset Scores, echo=F}
+knitr::kable(tail(offset.result,n=20))
+```
+
+
