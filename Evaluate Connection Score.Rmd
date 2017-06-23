@@ -12,12 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document attempts to establish if connection score is a good metric for choosing candidate therapies
-using Gene Expression Connectivity Map according to the method detailed in Zhang and Gantt 2008. Specifically, we will look at a theoretical unordered query gene signature that matches the top m of N genes exactly (in terms of sign - rank is not included in unordered signatures) and establish the distribution of connection score as m tends to N.
+This document attempts to establish the properties of varying cerain properties of unordered query gene signatures in performing Connectivity Map. For details of the connectivity map method employed, see Zhang and Gantt 2008.
 
-It is also intended for p values to be calculated for each of these scores by randomly generating query 
-gene signatures and seeing if how man of the scores are higher than or equal to the synthesised connection 
-score for that value of m.
+Specifically, we will look at a synthetic unordered query gene signature that matches the top m of N genes in a reference profile exactly (in terms of sign - rank is not included in unordered signatures) and establish the distribution of connection score as m tends to N.
+
+We will establish how varying the length of m will affect the connection score and furthermore we will 
+calculate the effect this has on estimated p values.
+
+Finally, we will look at how connection score might be affected by offsetting our synthetic query gene 
+signature such that it matches genes that are ranked lower in the reference profile.
 
 # Creating a synthetic Reference Profile and Query Gene Signature
 
@@ -69,7 +72,7 @@ Connection score is simply dividing the connection strength by the theoretical m
 
 ## Random signatures
 
-Let's generate `r  params$Random.Sigs`.
+Let's generate `r  params$Random.Sigs` random signatures.
 
 ```{r Create random signatures}
 random.profiles <- lapply(seq(params$Random.Sigs), function(i) {
