@@ -209,4 +209,5 @@ knitr::kable(head(offset.result,n=20))
 knitr::kable(tail(offset.result,n=20))
 ```
 
-
+These data show a significant effect when the offset of the synthetic query gene signature is increased. In a real world setting, this would imply that, if the unordered  query signature consisted of a set of genes exactly matching the sign of the ranks of those in the reference profile, a higher 
+connection score would be observed if those genes were ranked lower in the reference profile, i.e. larger integer values.
