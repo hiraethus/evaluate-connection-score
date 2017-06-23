@@ -78,11 +78,8 @@ Connection score is simply dividing the connection strength by the theoretical m
 Let's generate `r  params$Random.Sigs` random signatures.
 
 ```{r Create random signatures}
-random.profiles <- lapply(seq(params$Random.Sigs), function(i) {
-  ranks <- rank(rnorm(n = params$N))
-  signs <- sign(rnorm(n= params$N, mean = 0, sd=1))
-
-  ranks * signs
+random.signatures <- lapply(seq(params$Random.Sigs), function(i) {
+  sign(rnorm(n= params$N, mean = 0, sd=1))
 })
 
 ```
@@ -142,7 +139,7 @@ p.vals <- apply(result, 1, function(row) {
   
   theoretical.max.score <- max.connection.strength(params$N, m)
   
-  random.connection.scores <- lapply(random.profiles, function(rand.prof) {
+  random.connection.scores <- lapply(random.signatures, function(rand.prof) {
     random.strength <- calc.connection.strength(query.gene.sig, rand.prof, m)
     random.score <- random.strength / theoretical.max.score
   })
@@ -169,9 +166,9 @@ knitr::kable(tail(significant.result, n=20))
 plot(x= significant.result$m, y= significant.result$p.vals)
 ```
 
-We can see in the results that as m increases, p becomes more significant implying that random query 
-gene signatures are less likely to be as high as the synthetic unordered query gene signature as 
-the query gene signature gets longer.
+As our synthetic query gene signature is a theoretical maximum for the genes selected by design, it 
+impossible for any of the random query gene signatures to have a higher connection score and thus, all 
+p values are 0.
 
 # Offset effect
 When I refer to Offset effect, I refer to the effect of the genes in the query gene signature being offset from the highest ranked to the lower ranked. For example, if I selected the 50 most highly ranked genes from the reference profile for my query gene signature, how would the connection score be affected if I took the 50 most significant except one and so forth.
