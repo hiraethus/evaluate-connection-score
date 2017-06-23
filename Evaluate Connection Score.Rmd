@@ -139,8 +139,8 @@ p.vals <- apply(result, 1, function(row) {
   
   theoretical.max.score <- max.connection.strength(params$N, m)
   
-  random.connection.scores <- lapply(random.signatures, function(rand.prof) {
-    random.strength <- calc.connection.strength(query.gene.sig, rand.prof, m)
+  random.connection.scores <- lapply(random.signatures, function(rand.sig) {
+    random.strength <- calc.connection.strength(rand.sig, reference.profile, m)
     random.score <- random.strength / theoretical.max.score
   })
   
