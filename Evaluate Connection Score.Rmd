@@ -159,6 +159,10 @@ knitr::kable(head(significant.result, n=20))
 knitr::kable(tail(significant.result, n=20))
 ```
 
+```{r Plot significant p vals, echo=F}
+plot(x= significant.result$m, y= significant.result$p.vals)
+```
+
 We can see in the results that as m increases, p becomes more significant implying that random query 
 gene signatures are less likely to be as high as the synthetic unordered query gene signature as 
 the query gene signature gets longer.
