@@ -3,6 +3,7 @@ title: "Evaluating Connection Score on Unordered Query Gene Signatures"
 params:
   N: 500
   Random.Sigs: 2000
+bibliography: references.bib
 output: pdf_document
 ---
 
@@ -12,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document attempts to establish the properties of varying cerain properties of unordered query gene signatures in performing Connectivity Map. For details of the connectivity map method employed, see Zhang and Gantt 2008.
+This document attempts to establish the properties of varying cerain properties of unordered query gene signatures in performing Connectivity Map. For details of the connectivity map method employed, see [@zhang2008simple].
 
 Specifically, we will look at a synthetic unordered query gene signature that matches the top m of N genes in a reference profile exactly (in terms of sign - rank is not included in unordered signatures) and establish the distribution of connection score as m tends to N.
 
@@ -171,8 +172,9 @@ gene signatures are less likely to be as high as the synthetic unordered query g
 the query gene signature gets longer.
 
 # Offset effect
+When I refer to Offset effect, I refer to the effect of the genes in the query gene signature being offset from the highest ranked to the lower ranked. For example, if I selected the 50 most highly ranked genes from the reference profile for my query gene signature, how would the connection score be affected if I took the 50 most significant except one and so forth.
 
-If the query synthetic gene signature is offset by an amount F, then I anticipate that the connection 
+If the synthetic query gene signature is offset by an amount F, then I anticipate that the connection 
 score will go up. This is because, by offsetting the synthetic gene signature, lower ranked, and therefore large rank values will be multiplied together with the reference profile. This could 
 imply that the connection score is biased towards finding matching lower ranked genes rather than the 
 highest ones.
@@ -218,3 +220,8 @@ plot(offset.result)
 
 These data show a significant effect when the offset of the synthetic query gene signature is increased. In a real world setting, this would imply that, if the unordered  query signature consisted of a set of genes exactly matching the sign of the ranks of those in the reference profile, a higher 
 connection score would be observed if those genes were ranked lower in the reference profile, i.e. larger integer values.
+
+This would imply that connection scores, if viewed in isolation might be misleading where they are 
+extremely accurate.
+
+### References
