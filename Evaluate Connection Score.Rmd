@@ -1,10 +1,12 @@
 ---
 title: "Evaluating Connection Score on Unordered Query Gene Signatures"
+output:
+  word_document: default
+  pdf_document: default
 params:
   N: 500
   Random.Sigs: 2000
 bibliography: references.bib
-output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document attempts to establish the properties of varying cerain properties of unordered query gene signatures in performing Connectivity Map. For details of the connectivity map method employed, see [@zhang2008simple].
+This document attempts to establish the properties of varying certain properties of unordered query gene signatures in performing Connectivity Map. For details of the connectivity map method employed, see [@zhang2008simple].
 
 Specifically, we will look at a synthetic unordered query gene signature that matches the top m of N genes in a reference profile exactly (in terms of sign - rank is not included in unordered signatures) and establish the distribution of connection score as m tends to N.
 
@@ -127,7 +129,7 @@ knitr::kable(tail(result, n=20))
 plot(result)
 ```
 
-As we can see form the plot, Connection Score grows exponentially as m converges on N. More importantly, as m converges on N, the connection score tends towards 1.0. This means that connection 
+As we can see from the plot, Connection Score grows exponentially as m converges on N. More importantly, as m converges on N, the connection score tends towards 1.0. This means that connection 
 score varies with the length of m, implying that a higher connection score is derived when our query 
 gene signature is more complete.
 
