@@ -1,5 +1,6 @@
 ---
 title: "Evaluating Connection Score on Unordered Query Gene Signatures"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   word_document: default
   pdf_document: default
