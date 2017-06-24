@@ -27,11 +27,11 @@ signature such that it matches genes that are ranked lower in the reference prof
 
 # Creating a synthetic Reference Profile and Query Gene Signature
 
-We will create our synthetic Reference Profile as simply an ordered rank of probes from 1 to N with 
-alternative signs to represent upregulation and downregulation of the genes. Note that we select N = `r params$N`.
+We will create our synthetic Reference Profile as simply an ordered rank of probes from N to 1 with 
+alternative signs to represent upregulation and downregulation of the genes. The higher the rank number, the higher the change in expression. Note that we select N = `r params$N`.
 
 ```{r Create Ref Profile}
-reference.profile <- seq(params$N)
+reference.profile <- seq(from=params$N, to=1)
 even.probes <- seq(2, params$N, by = 2)
 
 reference.profile[even.probes] <- -reference.profile[even.probes]
@@ -126,9 +126,8 @@ knitr::kable(tail(result, n=20))
 plot(result)
 ```
 
-As we can see from the plot, Connection Score grows exponentially as m converges on N. More importantly, as m converges on N, the connection score tends towards 1.0. This means that connection 
-score varies with the length of m, implying that a higher connection score is derived when our query 
-gene signature is more complete.
+As we can see from the plot, Connection Scores are all 1 for all m, assuming we start with the most 
+significant rank.
 
 # Calculate P Values
 
@@ -217,10 +216,10 @@ knitr::kable(tail(offset.result,n=20))
 plot(offset.result)
 ```
 
-These data show a significant effect when the offset of the synthetic query gene signature is increased. In a real world setting, this would imply that, if the unordered  query signature consisted of a set of genes exactly matching the sign of the ranks of those in the reference profile, a higher 
+These data show a significant effect when the offset of the synthetic query gene signature is increased. In a real world setting, this would imply that, if the unordered  query signature consisted of a set of genes exactly matching the sign of the ranks of those in the reference profile, a lower 
 connection score would be observed if those genes were ranked lower in the reference profile, i.e. larger integer values.
 
-This would imply that connection scores, if viewed in isolation might be misleading where they are 
-extremely accurate.
+This proves that the Connection Score over for an unordered query gene signature against a 
+reference profile is sensitive to how important (i.e. how highly ranked) the selected genes are.
 
 ### References
