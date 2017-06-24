@@ -114,12 +114,12 @@ result <- data.frame(m=Ms, cs=scores)
 
 ## Lowest Connection Scores
 ```{r Lowest Connection Scores varying m, echo=F}
-knitr::kable(head(result, n=20))
+knitr::kable(head(result, n=20), row.names=F)
 ```
 
 ## Highest Connection Scores
 ```{r Highest Connection Scores varying m, echo=F}
-knitr::kable(tail(result, n=20))
+knitr::kable(tail(result, n=20), row.names=F)
 ```
 
 ```{r Plot Connection Scores, echo=F}
@@ -153,12 +153,12 @@ significant.result<- cbind(result, p.vals)
 
 ### P vals for Lowest m
 ```{r Lowest significant p vals, echo=F}
-knitr::kable(head(significant.result, n=20))
+knitr::kable(head(significant.result, n=20), row.names=F)
 ```
 
 ### P vals for Highest m
 ```{r Highest significant p vals, echo=F}
-knitr::kable(tail(significant.result, n=20))
+knitr::kable(tail(significant.result, n=20), row.names=F)
 ```
 
 ```{r Plot significant p vals, echo=F}
@@ -204,12 +204,12 @@ offset.result <- data.frame(offset=offsets, cs=offset.connection.scores)
 
 ### Lowest Offset Scores
 ```{r Lowest Offset Scores, echo=F}
-knitr::kable(head(offset.result,n=20))
+knitr::kable(head(offset.result,n=20), row.names=F)
 ```
 
 ### Highest Offset Scores
 ```{r Highest Offset Scores, echo=F}
-knitr::kable(tail(offset.result,n=20))
+knitr::kable(tail(offset.result,n=20), row.names=F)
 ```
 
 ```{r Plot Offset effect, echo=F}
