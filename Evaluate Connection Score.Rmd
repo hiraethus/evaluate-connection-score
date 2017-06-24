@@ -174,9 +174,10 @@ p values are 0.
 When I refer to Offset effect, I refer to the effect of the genes in the query gene signature being offset from the highest ranked to the lower ranked. For example, if I selected the 50 most highly ranked genes from the reference profile for my query gene signature, how would the connection score be affected if I took the 50 most significant except one and so forth.
 
 If the synthetic query gene signature is offset by an amount F, then I anticipate that the connection 
-score will go up. This is because, by offsetting the synthetic gene signature, lower ranked, and therefore large rank values will be multiplied together with the reference profile. This could 
-imply that the connection score is biased towards finding matching lower ranked genes rather than the 
-highest ones.
+score will go down. This is because, by offsetting the synthetic gene signature, lower ranked, and
+therefore smaller rank values will be multiplied together with the reference profile. This  
+implies that the connection score is biased towards query signatures with higher ranked matching 
+genes, which is what we want.
 
 ## Example
 Let us choose a nominal m:
